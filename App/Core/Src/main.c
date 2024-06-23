@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -56,7 +57,17 @@ void StartTask02(void const * argument);
 void StartTask03(void const * argument);
 
 /* USER CODE BEGIN PFP */
+void send_defTask(void)
+{
+	uint8_t data[] = "Default Task \r\n";
+	CDC_Transmit_FS(data, sizeof(data));
+}
 
+void send_Task2(void)
+{
+	uint8_t data[] = " send Task 2 \r\n";
+	CDC_Transmit_FS(data, sizeof(data));
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -234,10 +245,13 @@ static void MX_GPIO_Init(void)
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
+  /* init code for USB_DEVICE */
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
   for(;;)
   {
+   // send_defTask();
     osDelay(1);
   }
   /* USER CODE END 5 */
@@ -256,6 +270,7 @@ void StartTask02(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+	 send_Task2();
     HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
     osDelay(1000);
   }
