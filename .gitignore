@@ -1,0 +1,10 @@
+Debug/
+*.d
+*.o
+*.su
+*.mk
+*.bin
+*.elf
+*.list
+*.map
+*.settings
