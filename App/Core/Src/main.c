@@ -42,7 +42,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 osThreadId FW_Update_TaskHandle;
-osThreadId Audio_TaskHandle;
+osThreadId Led_ControlHandle;
+osThreadId Motion_Sensor_RHandle;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -52,6 +53,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 void StartDefaultTask(void const * argument);
 void StartTask02(void const * argument);
+void StartTask03(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -115,9 +117,13 @@ int main(void)
   osThreadDef(FW_Update_Task, StartDefaultTask, osPriorityNormal, 0, 128);
   FW_Update_TaskHandle = osThreadCreate(osThread(FW_Update_Task), NULL);
 
-  /* definition and creation of Audio_Task */
-  osThreadDef(Audio_Task, StartTask02, osPriorityIdle, 0, 128);
-  Audio_TaskHandle = osThreadCreate(osThread(Audio_Task), NULL);
+  /* definition and creation of Led_Control */
+  osThreadDef(Led_Control, StartTask02, osPriorityIdle, 0, 128);
+  Led_ControlHandle = osThreadCreate(osThread(Led_Control), NULL);
+
+  /* definition and creation of Motion_Sensor_R */
+  osThreadDef(Motion_Sensor_R, StartTask03, osPriorityIdle, 0, 128);
+  Motion_Sensor_RHandle = osThreadCreate(osThread(Motion_Sensor_R), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -133,6 +139,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+//	  HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
+//	  HAL_Delay(1);
   }
   /* USER CODE END 3 */
 }
@@ -197,6 +205,7 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, LED_1_Pin|LED_2_Pin|LED_3_Pin|LED_4_Pin, GPIO_PIN_RESET);
@@ -247,9 +256,28 @@ void StartTask02(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
+    osDelay(1000);
   }
   /* USER CODE END StartTask02 */
+}
+
+/* USER CODE BEGIN Header_StartTask03 */
+/**
+* @brief Function implementing the Motion_Sensor_R thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask03 */
+void StartTask03(void const * argument)
+{
+  /* USER CODE BEGIN StartTask03 */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTask03 */
 }
 
 /**
